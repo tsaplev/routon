@@ -24,7 +24,7 @@ export interface Transport {
   [key: string]: TransportItem; // TODO set to Vehicle
 }
 
-interface Direction extends MapPoint {
+export interface Direction extends MapPoint {
   name: string;
 }
 

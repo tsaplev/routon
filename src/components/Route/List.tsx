@@ -2,13 +2,13 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteRoute, deleteAllRoutes, selectRoutes } from './routeSlice';
 
-export function Table() {
+export function List() {
   const routes = useSelector(selectRoutes);
   const dispatch = useDispatch();
 
   return (
     <div className="table dbg-box">
-      <h2>Table</h2>
+      <h2>List</h2>
       {routes.map((el: any) => {
         const route = {
           id: el.id,

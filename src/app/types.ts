@@ -5,7 +5,24 @@ export interface MapPoint {
 
 export type MapPath = MapPoint[];
 
-export type Vehicle = 'plane' | 'train' | 'car' | 'bus' | 'other';
+export type TravelMode =
+  | 'DRIVING'
+  | 'WALKING'
+  | 'BICYCLING'
+  | 'TRANSIT'
+  | 'OTHER';
+
+export interface TransportItem {
+  label: string;
+  icon: string;
+  travelMode: TravelMode;
+}
+
+export type Vehicle = 'plane' | 'train' | 'car' | 'bus' | 'ship' | 'other';
+
+export interface Transport {
+  [key: string]: TransportItem; // TODO set to Vehicle
+}
 
 interface Direction extends MapPoint {
   name: string;

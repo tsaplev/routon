@@ -1,52 +1,29 @@
-import {
-  MapPoint,
-  MapPath,
-  Vehicle,
-  TransportItem,
-  TravelMode,
-} from './app/types';
+import { MapPoint, MapPath, Vehicle } from './app/types';
 import { transport as transportList } from './constants/transport';
 
 class RouteCalculator {
-  readonly from: MapPoint;
-  readonly to: MapPoint;
-  readonly transport: TransportItem;
-
-  constructor(from: MapPoint, to: MapPoint, vehicle: Vehicle) {
-    this.from = from;
-    this.to = to;
-    this.transport = transportList[vehicle];
-  }
-
-  calculate(
+  static async getPath(
     from: MapPoint,
     to: MapPoint,
-    travelMode: TravelMode
+    vehicle: Vehicle
   ): Promise<MapPath> {
     let path = [from, to];
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (travelMode) {
-          console.log(`Calulating path throught ${travelMode}`);
-          resolve(path);
-        }
-      }, 1000);
-    });
-  }
+    const { travelMode } = transportList[vehicle];
 
-  async getPath(): Promise<MapPath> {
-    let path = [this.from, this.to];
-
-    if (this.transport.travelMode !== 'OTHER') {
-      path = await this.calculate(
-        this.from,
-        this.to,
-        this.transport.travelMode
-      );
-      return path;
+    if (travelMode !== 'OTHER') {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (travelMode) {
+            console.log(`Calulating path throught ${travelMode}`);
+            resolve(path);
+          } else {
+            reject(`Something went wrong`);
+          }
+        }, 1000);
+      });
     }
 
-    return [this.from, this.to];
+    return [from, to];
   }
 }
 

@@ -4,6 +4,7 @@ import { Route } from '../../app/types';
 import { nanoid } from 'nanoid';
 
 import { routes } from '../../constants/routes';
+import RouteCalculator from '../../RouteCalculator';
 
 interface RouteState {
   isLoading: boolean;
@@ -44,12 +45,12 @@ export const routeSlice = createSlice({
 
 export const { addRoute, deleteRoute, deleteAllRoutes } = routeSlice.actions;
 
-export const addRouteAsync = (route: Route): AppThunk => (dispatch) => {
-  dispatch(routeSlice.actions.setLoading(true));
-  setTimeout(() => {
-    dispatch(addRoute(route));
-    dispatch(routeSlice.actions.setLoading(false));
-  }, 1000);
+export const addRouteAsync = (route: Route): AppThunk => async (dispatch) => {
+  const calculator = new RouteCalculator(route.from, route.to, route.transport);
+
+  route.path = await calculator.getPath();
+
+  dispatch(addRoute(route));
 };
 
 export const selectRoutes = (state: RootState) => state.route.routes;

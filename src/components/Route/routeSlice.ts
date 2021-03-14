@@ -46,8 +46,9 @@ export const routeSlice = createSlice({
 export const { addRoute, deleteRoute, deleteAllRoutes } = routeSlice.actions;
 
 export const addRouteAsync = (route: Route): AppThunk => async (dispatch) => {
-  const calculator = new RouteCalculator(route.from, route.to, route.transport);
+  dispatch(routeSlice.actions.setLoading(true));
 
+  const calculator = new RouteCalculator(route.from, route.to, route.transport);
   route.path = await calculator.getPath();
 
   dispatch(addRoute(route));

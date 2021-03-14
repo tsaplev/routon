@@ -8,17 +8,17 @@ const routes: Route[] = [
     from: {
       name: 'Moscow',
       lat: 55.7558,
-      lon: 37.6173,
+      lng: 37.6173,
     },
     to: {
       name: 'Dubai',
       lat: 25.2048,
-      lon: 55.2708,
+      lng: 55.2708,
     },
     transport: 'plane',
     path: [
-      { lat: 55.7558, lon: 37.6173 },
-      { lat: 25.2048, lon: 55.2708 },
+      { lat: 55.7558, lng: 37.6173 },
+      { lat: 25.2048, lng: 55.2708 },
     ],
   },
   {
@@ -28,17 +28,17 @@ const routes: Route[] = [
     from: {
       name: 'Dubai',
       lat: 55.7558,
-      lon: 37.6173,
+      lng: 37.6173,
     },
     to: {
       name: 'Manila',
       lat: 25.2048,
-      lon: 55.2708,
+      lng: 55.2708,
     },
     transport: 'plane',
     path: [
-      { lat: 55.7558, lon: 37.6173 },
-      { lat: 25.2048, lon: 55.2708 },
+      { lat: 55.7558, lng: 37.6173 },
+      { lat: 25.2048, lng: 55.2708 },
     ],
   },
 ];

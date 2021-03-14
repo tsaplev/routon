@@ -1,6 +1,6 @@
 export interface MapPoint {
   lat: number;
-  lon: number;
+  lng: number;
 }
 
 export type MapPath = MapPoint[];
@@ -19,6 +19,14 @@ export interface TransportItem {
 }
 
 export type Vehicle = 'plane' | 'train' | 'car' | 'bus' | 'ship' | 'other';
+// export enum Vehicle {
+//   plane,
+//   train,
+//   car,
+//   bus,
+//   ship,
+//   other,
+// }
 
 export interface Transport {
   [key: string]: TransportItem; // TODO set to Vehicle

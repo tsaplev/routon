@@ -1,8 +1,8 @@
 # Trip Planner
 
-![preview.png](./preview.png)
-
 > Coming soon.
+
+![preview.png](./preview.png)
 
 ## Technologies
 

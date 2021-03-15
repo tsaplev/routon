@@ -33,7 +33,7 @@ export const routeSlice = createSlice({
   name: 'route',
   initialState,
   reducers: {
-    deleteRoute: (state) => {
+    deleteLastRoute: (state) => {
       state.routes = state.routes.slice(0, -1);
     },
     deleteAllRoutes: (state) => {
@@ -56,7 +56,7 @@ export const routeSlice = createSlice({
   },
 });
 
-export const { deleteRoute, deleteAllRoutes } = routeSlice.actions;
+export const { deleteLastRoute, deleteAllRoutes } = routeSlice.actions;
 
 export const selectRoutes = (state: RootState) => state.route.routes;
 export const selectRoutesLoadingStatus = (state: RootState) =>

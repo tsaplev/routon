@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteRoute, deleteAllRoutes, selectRoutes } from './routeSlice';
+import { deleteLastRoute, deleteAllRoutes, selectRoutes } from './routeSlice';
 
 export function List() {
   const routes = useSelector(selectRoutes);
@@ -23,7 +23,7 @@ export function List() {
           </pre>
         );
       })}
-      <button onClick={() => dispatch(deleteRoute())}>Delete</button>
+      <button onClick={() => dispatch(deleteLastRoute())}>Delete</button>
       <button onClick={() => dispatch(deleteAllRoutes())}>Delete all</button>
     </div>
   );

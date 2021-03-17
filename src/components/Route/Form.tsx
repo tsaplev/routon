@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addRouteAsync, selectRoutesLoadingStatus } from './routeSlice';
+import { addRoute, selectRoutesLoadingStatus } from './routeSlice';
 import { nanoid } from 'nanoid';
 
 export function Form() {
@@ -9,24 +9,24 @@ export function Form() {
 
   const createRoute = () => {
     dispatch(
-      addRouteAsync({
+      addRoute({
         id: nanoid(),
         departure: '2019-10-16 01:10:00',
         arrival: '2019-10-16 07:30:00',
         from: {
           name: 'Manila',
           lat: 55.7558,
-          lon: 37.6173,
+          lng: 37.6173,
         },
         to: {
           name: 'Sydney',
           lat: 25.2048,
-          lon: 55.2708,
+          lng: 55.2708,
         },
         transport: 'plane',
         path: [
-          { lat: 55.7558, lon: 37.6173 },
-          { lat: 25.2048, lon: 55.2708 },
+          { lat: 55.7558, lng: 37.6173 },
+          { lat: 25.2048, lng: 55.2708 },
         ],
       })
     );

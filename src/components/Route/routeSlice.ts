@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AppThunk, RootState } from '../../app/store';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 import { Route } from '../../app/types';
-import { nanoid } from 'nanoid';
 
 import { routes } from '../../constants/routes';
 import RouteCalculator from '../../RouteCalculator';

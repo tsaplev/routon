@@ -39,21 +39,25 @@ export function Form() {
         <h2>Calculating shortest path...</h2>
       ) : (
         <form>
-          <p>
-            <input type="text" name="from" />
-          </p>
-          <p>
-            <select name="transport">
+          <div className="dbg-box__input">
+            <input type="text" name="whereFrom" />
+          </div>
+
+          <div className="dbg-box__input">
+            <select name="whatBy" defaultValue="">
+              <option value="" hidden>
+                --
+              </option>
               <option value="plane">Plane</option>
               <option value="train">Train</option>
             </select>
-          </p>
-          <p>
-            <input type="text" name="to" />
-          </p>
-          <button type="button" onClick={createRoute}>
-            Add
-          </button>
+          </div>
+
+          <div className="dbg-box__input">
+            <input type="text" name="whereTo" />
+          </div>
+
+          <button type="button">Add</button>
         </form>
       )}
     </div>

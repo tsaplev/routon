@@ -28,17 +28,16 @@ class RouteCalculator {
           return reject(path);
         }
 
-        try {
+        if (response?.routes[0]?.overview_path) {
           const overviewPath = response.routes[0].overview_path;
           const linePath = overviewPath.reduce((acc: MapPath, point: any) => {
             return [...acc, { lat: point.lat(), lng: point.lng() }];
           }, []);
 
           return resolve(linePath);
-        } catch (e) {
-          console.error(e);
-          return path;
         }
+
+        return path;
       });
     });
   }

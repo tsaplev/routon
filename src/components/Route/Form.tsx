@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 import Geosuggest from 'react-geosuggest';
 import { useForm } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
+import { selectRoutes } from './routeSlice';
 
 import ru from 'date-fns/locale/ru';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -13,6 +14,7 @@ import '../LocationInput/index.css';
 export function Form() {
   const isLoading = useSelector(selectRoutesLoadingStatus);
   const dispatch = useDispatch();
+  const routes = useSelector(selectRoutes);
 
   const {
     register,
@@ -20,6 +22,7 @@ export function Form() {
     watch,
     setValue,
     getValues,
+    reset,
     formState: { errors },
   } = useForm({
     mode: 'onSubmit',
@@ -31,8 +34,10 @@ export function Form() {
     dispatch(
       addRoute({
         id: nanoid(),
-        departure: data.departure.toISOString(),
-        arrival: data.arrival.toISOString(),
+        // departure: data.departure.toISOString(),
+        // arrival: data.arrival.toISOString(),
+        departure: '2019-02-03 14:05',
+        arrival: '2019-02-04 01:23',
         from: {
           name: data.from.gmaps?.name,
           lat: data.from.location?.lat,
@@ -47,6 +52,8 @@ export function Form() {
         path: [],
       })
     );
+
+    reset();
   };
 
   const RouteDatePicker = ({ label }: { label: string }) => {
@@ -77,9 +84,8 @@ export function Form() {
         {...register(label, { required: true })}
         selected={selectedDate}
         timeInputLabel="Time:"
-        dateFormat="MMMM d, yyyy h:mm aa"
+        dateFormat="MMMM d, yyyy HH"
         showTimeInput
-        locale={ru}
         minDate={getMinDate()}
         maxDate={getMaxDate()}
         onChange={(date: any) => {
@@ -107,7 +113,20 @@ export function Form() {
         {/* From */}
         <div className="dbg-box__input">
           <Geosuggest
-            {...register('from', { required: true })}
+            {...register('from', {
+              required: !routes[routes.length - 1]?.to.name?.length,
+              value: routes[routes.length - 1]?.to.name?.length
+                ? {
+                    gmaps: { name: routes[routes.length - 1]?.to.name },
+                    location: {
+                      lat: routes[routes.length - 1]?.to.lat,
+                      lng: routes[routes.length - 1]?.to.lng,
+                    },
+                  }
+                : undefined,
+            })}
+            initialValue={routes[routes.length - 1]?.to.name ?? null}
+            disabled={routes[routes.length - 1]?.to.name?.length > 0}
             onChange={() => {}}
             onBlur={() => {}}
             onSuggestSelect={(data: any) => {
@@ -121,12 +140,12 @@ export function Form() {
         </div>
 
         {/* Departure */}
-        <div className="dbg-box__input">
+        {/* <div className="dbg-box__input">
           <RouteDatePicker label="departure" />
           {errors.departure && (
             <span style={{ color: 'red' }}> This field is required</span>
           )}
-        </div>
+        </div> */}
 
         {/* Transport */}
         <div className="dbg-box__input">
@@ -149,12 +168,12 @@ export function Form() {
         </div>
 
         {/* Arrival */}
-        <div className="dbg-box__input">
+        {/* <div className="dbg-box__input">
           <RouteDatePicker label="arrival" />
           {errors.arrival && (
             <span style={{ color: 'red' }}> This field is required</span>
           )}
-        </div>
+        </div> */}
 
         {/* To */}
         <div className="dbg-box__input">

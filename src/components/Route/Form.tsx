@@ -4,7 +4,6 @@ import { addRoute, selectRoutesLoadingStatus } from './routeSlice';
 import { nanoid } from 'nanoid';
 import Geosuggest from 'react-geosuggest';
 import { useForm } from 'react-hook-form';
-import DatePicker from 'react-datepicker';
 import { selectRoutes } from './routeSlice';
 import { transport } from '../../constants/transport';
 
@@ -19,9 +18,7 @@ export function Form() {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
-    getValues,
     reset,
     formState: { errors },
   } = useForm({
@@ -54,47 +51,6 @@ export function Form() {
     );
 
     reset();
-  };
-
-  const RouteDatePicker = ({ label }: { label: string }) => {
-    const selectedDate = watch(label, null);
-
-    const getMinDate = () => {
-      if (label === 'departure') {
-        return null;
-      }
-
-      if (label === 'arrival') {
-        return getValues('departure');
-      }
-    };
-
-    const getMaxDate = () => {
-      if (label === 'departure') {
-        return getValues('arrival');
-      }
-
-      if (label === 'arrival') {
-        return null;
-      }
-    };
-
-    return (
-      <DatePicker
-        {...register(label, { required: true })}
-        selected={selectedDate}
-        timeInputLabel="Time:"
-        dateFormat="MMMM d, yyyy HH"
-        showTimeInput
-        minDate={getMinDate()}
-        maxDate={getMaxDate()}
-        onChange={(date: any) => {
-          setValue(label, date);
-        }}
-        withPortal
-        placeholderText={label}
-      />
-    );
   };
 
   if (isLoading) {

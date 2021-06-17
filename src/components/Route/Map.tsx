@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Route } from '../../app/types';
 import { selectRoutes } from './routeSlice';
 
 export function Map() {
   const routes = useSelector(selectRoutes);
-  const [map, setMap] = useState({});
 
   useEffect(() => {
+    console.log('Component did mount');
     const map = new google.maps.Map(
       document.getElementById('map') as HTMLElement,
       {
@@ -19,9 +19,8 @@ export function Map() {
       }
     );
 
-    setMap(map);
     renderRoutes(map, routes);
-  }, []);
+  }, [routes]);
 
   const renderRoutes = (map: any, routes: Route[]) => {
     const bounds = new google.maps.LatLngBounds();
@@ -73,16 +72,6 @@ export function Map() {
       }
     });
   };
-
-  useEffect(() => {
-    if (Object.keys(map).length) {
-      renderRoutes(map, routes);
-    }
-
-    return () => {
-      console.log('clearing data');
-    };
-  }, [routes]);
 
   return (
     <div className="dbg-box">

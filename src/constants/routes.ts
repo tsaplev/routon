@@ -32,13 +32,13 @@ const routes: Route[] = [
     },
     to: {
       name: 'Manila',
-      lat: 25.2048,
-      lng: 55.2708,
+      lat: 14.5995,
+      lng: 120.9842,
     },
     transport: 'plane',
     path: [
-      { lat: 55.7558, lng: 37.6173 },
       { lat: 25.2048, lng: 55.2708 },
+      { lat: 14.5995, lng: 120.9842 },
     ],
   },
 ];

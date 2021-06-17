@@ -6,15 +6,15 @@ import Geosuggest from 'react-geosuggest';
 import { useForm } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import { selectRoutes } from './routeSlice';
+import { transport } from '../../constants/transport';
 
-import ru from 'date-fns/locale/ru';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../LocationInput/index.css';
 
 export function Form() {
   const isLoading = useSelector(selectRoutesLoadingStatus);
-  const dispatch = useDispatch();
   const routes = useSelector(selectRoutes);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -106,6 +106,30 @@ export function Form() {
     );
   }
 
+  const getFrom = () => {
+    const latestEnd = routes[routes.length - 1]?.to;
+
+    if (latestEnd) {
+      return {
+        required: !(latestEnd.name.length > 0),
+        value: {
+          gmaps: { name: latestEnd.name },
+          location: {
+            lat: latestEnd.lat,
+            lng: latestEnd.lng,
+          },
+        },
+      };
+    }
+
+    return {
+      required: true,
+      value: null,
+    };
+  };
+
+  const fromSuggestion = getFrom();
+
   return (
     <div className="dbg-box">
       <h2>Form</h2>
@@ -114,22 +138,14 @@ export function Form() {
         <div className="dbg-box__input">
           <Geosuggest
             {...register('from', {
-              required: !routes[routes.length - 1]?.to.name?.length,
-              value: routes[routes.length - 1]?.to.name?.length
-                ? {
-                    gmaps: { name: routes[routes.length - 1]?.to.name },
-                    location: {
-                      lat: routes[routes.length - 1]?.to.lat,
-                      lng: routes[routes.length - 1]?.to.lng,
-                    },
-                  }
-                : undefined,
+              required: fromSuggestion.required,
+              value: fromSuggestion.value,
             })}
-            initialValue={routes[routes.length - 1]?.to.name ?? null}
-            disabled={routes[routes.length - 1]?.to.name?.length > 0}
+            initialValue={fromSuggestion.value?.gmaps.name}
+            disabled={!fromSuggestion.required}
             onChange={() => {}}
             onBlur={() => {}}
-            onSuggestSelect={(data: any) => {
+            onSuggestSelect={(data) => {
               setValue('from', data);
             }}
             autoComplete="off"
@@ -148,23 +164,21 @@ export function Form() {
         </div> */}
 
         {/* Transport */}
-        <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.transport ? 'red' : 'transparent' }}
+        >
           <select
             {...register('transport', { required: true })}
             name="transport"
-            defaultValue=""
           >
             <option hidden label=" -- " />
-            <option value="plane">Plane</option>
-            <option value="train">Train</option>
-            <option value="car">Car</option>
-            <option value="bus">Bus</option>
-            <option value="ship">Ship</option>
-            <option value="other">Other</option>
+            {Object.entries(transport).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value.label}
+              </option>
+            ))}
           </select>
-          {errors.transport && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
         </div>
 
         {/* Arrival */}
@@ -176,7 +190,10 @@ export function Form() {
         </div> */}
 
         {/* To */}
-        <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.to ? 'red' : 'transparent' }}
+        >
           <Geosuggest
             {...register('to', { required: true })}
             onChange={() => {}}
@@ -186,9 +203,6 @@ export function Form() {
             }}
             autoComplete="off"
           />
-          {errors.to && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
         </div>
 
         <button type="submit">Add</button>

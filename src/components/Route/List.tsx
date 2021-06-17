@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Route } from '../../app/types';
 import { deleteLastRoute, deleteAllRoutes, selectRoutes } from './routeSlice';
 
 export function List() {
@@ -9,7 +10,7 @@ export function List() {
   return (
     <div className="table dbg-box">
       <h2>List</h2>
-      {routes.map((el: any) => {
+      {routes.map((el: Route) => {
         const route = {
           id: el.id,
           from: el.from.name,

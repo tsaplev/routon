@@ -8,7 +8,7 @@ export function Map() {
   const [gmap, setGmap] = useState<GoogleMap>();
   const [mapData, setMapData] = useState<GoogleMapData>([]);
 
-  const renderRoutes = (map: any, routes: Route[]) => {
+  const renderRoutes = (map: GoogleMap, routes: Route[]) => {
     const bounds = new google.maps.LatLngBounds();
     const cirlce = {
       path: google.maps.SymbolPath.CIRCLE,
@@ -85,8 +85,6 @@ export function Map() {
   }, []);
 
   useEffect(() => {
-    console.log('ROUTES UPDATED', gmap, routes);
-
     if (!gmap) {
       return;
     }

@@ -23,12 +23,6 @@ export const addRoute = createAsyncThunk(
       route.to,
       route.transport
     );
-    // route.path = [
-    //   { lat: 55.7558, lng: 37.6173 },
-    //   { lat: 25.2048, lng: 55.2708 },
-    // ];
-
-    console.log('Route', route);
 
     return route;
   }

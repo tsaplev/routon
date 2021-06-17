@@ -91,7 +91,10 @@ export function Form() {
       <h2>Form</h2>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         {/* From */}
-        <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.from ? 'red' : 'transparent' }}
+        >
           <Geosuggest
             {...register('from', {
               required: fromSuggestion.required,
@@ -106,9 +109,6 @@ export function Form() {
             }}
             autoComplete="off"
           />
-          {errors.from && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
         </div>
 
         {/* Departure */}

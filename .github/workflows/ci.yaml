@@ -15,18 +15,10 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
-
-      - name: Check codestyle
-        run: yarn eslint
-
-      - name: Run tests
-        run: yarn test
-        env:
-          CI: true
+        run: npm ci
 
       - name: Run build with demo data
-        run: yarn build
+        run: npm run build
 
       - name: Deploy to gh-pages
         uses: JamesIves/github-pages-deploy-action@3.7.1

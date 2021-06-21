@@ -11,12 +11,11 @@ export function List() {
     <div className="table dbg-box">
       <h2>List</h2>
       {routes.map((el: Route) => {
-        const route = {
-          id: el.id,
-          from: el.from.name,
-          to: el.to.name,
-          by: el.transport,
-        };
+        const route = Object.assign({}, el);
+        delete route.path;
+        // route.from = el.from.name,
+        // route.to = el.to.name,
+        // route.by = el.transport,
 
         return (
           <pre key={route.id} style={{ background: 'lightgray' }}>

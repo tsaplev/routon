@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addRoute, selectRoutesLoadingStatus } from './routeSlice';
 import { nanoid } from 'nanoid';
 import Geosuggest from 'react-geosuggest';
+import DatePicker from 'react-datepicker';
 import { useForm } from 'react-hook-form';
 import { selectRoutes } from './routeSlice';
 import { transport } from '../../constants/transport';
@@ -18,7 +19,9 @@ export function Form() {
   const {
     register,
     handleSubmit,
+    watch,
     setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm({
@@ -27,14 +30,60 @@ export function Form() {
     reValidateMode: 'onBlur',
   });
 
+  useEffect(() => {
+    reset();
+  }, [routes]);
+
+  const RouteDatePicker = ({ label }: { label: string }) => {
+    const selectedDate = watch(label, null);
+    const latestDeparture = routes[routes.length - 1]?.departure;
+
+    const getMinDate = () => {
+      if (label === 'departure') {
+        return latestDeparture ? latestDeparture : null;
+      }
+
+      if (label === 'arrival') {
+        return getValues('departure');
+      }
+    };
+
+    const getMaxDate = () => {
+      if (label === 'departure') {
+        return getValues('arrival');
+      }
+
+      if (label === 'arrival') {
+        return null;
+      }
+    };
+
+    return (
+      <DatePicker
+        {...register(label, { required: true })}
+        selected={selectedDate}
+        timeInputLabel="Time:"
+        dateFormat="MMMM d, yyyy h:mm aa"
+        showTimeInput
+        minDate={getMinDate()}
+        maxDate={getMaxDate()}
+        onChange={(date: any) => {
+          setValue(label, date);
+        }}
+        withPortal
+        placeholderText={label}
+      />
+    );
+  };
+
   const onSubmit = (data: any) => {
     dispatch(
       addRoute({
         id: nanoid(),
-        // departure: data.departure.toISOString(),
-        // arrival: data.arrival.toISOString(),
-        departure: '2019-02-03 14:05',
-        arrival: '2019-02-04 01:23',
+        departure: data.departure.toISOString(),
+        arrival: data.arrival.toISOString(),
+        // departure: '2019-02-03 14:05',
+        // arrival: '2019-02-04 01:23',
         from: {
           name: data.from.gmaps?.name,
           lat: data.from.location?.lat,
@@ -67,7 +116,7 @@ export function Form() {
 
     if (latestEnd) {
       return {
-        required: !(latestEnd.name.length > 0),
+        required: false,
         value: {
           gmaps: { name: latestEnd.name },
           location: {
@@ -84,12 +133,23 @@ export function Form() {
     };
   };
 
+  // const getClosestPossibleDepartureDate = () => {
+  //   const latestDeparture = routes[routes.length - 1].departure;
+  // };
+
   const fromSuggestion = getFrom();
+
+  console.log('fromSuggestion.value', getValues('from'));
 
   return (
     <div className="dbg-box">
       <h2>Form</h2>
-      <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        autoComplete="off"
+        onSubmit={handleSubmit(onSubmit, (e) => {
+          console.log('e', e);
+        })}
+      >
         {/* From */}
         <div
           className="dbg-box__input"
@@ -97,8 +157,10 @@ export function Form() {
         >
           <Geosuggest
             {...register('from', {
-              required: fromSuggestion.required,
-              value: fromSuggestion.value,
+              required: true,
+              value: getValues('from')
+                ? getValues('from')
+                : fromSuggestion.value,
             })}
             initialValue={fromSuggestion.value?.gmaps.name}
             disabled={!fromSuggestion.required}
@@ -111,13 +173,12 @@ export function Form() {
           />
         </div>
 
-        {/* Departure */}
-        {/* <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.departure ? 'red' : 'transparent' }}
+        >
           <RouteDatePicker label="departure" />
-          {errors.departure && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
-        </div> */}
+        </div>
 
         {/* Transport */}
         <div
@@ -137,13 +198,12 @@ export function Form() {
           </select>
         </div>
 
-        {/* Arrival */}
-        {/* <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.arrival ? 'red' : 'transparent' }}
+        >
           <RouteDatePicker label="arrival" />
-          {errors.arrival && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
-        </div> */}
+        </div>
 
         {/* To */}
         <div

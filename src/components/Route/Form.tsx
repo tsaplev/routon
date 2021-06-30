@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addRoute, selectRoutesLoadingStatus } from './routeSlice';
 import { nanoid } from 'nanoid';
@@ -31,16 +31,19 @@ export function Form() {
   });
 
   useEffect(() => {
-    reset();
-  }, [routes]);
+    if (routes.length === 0) {
+      reset();
+    }
+  }, [routes, reset]);
 
   const RouteDatePicker = ({ label }: { label: string }) => {
+    const [time, setTime] = useState();
     const selectedDate = watch(label, null);
     const latestDeparture = routes[routes.length - 1]?.departure;
 
     const getMinDate = () => {
       if (label === 'departure') {
-        return latestDeparture ? latestDeparture : null;
+        return latestDeparture ? new Date(latestDeparture) : null;
       }
 
       if (label === 'arrival') {
@@ -61,14 +64,18 @@ export function Form() {
     return (
       <DatePicker
         {...register(label, { required: true })}
-        selected={selectedDate}
+        selected={time ? time : selectedDate}
         timeInputLabel="Time:"
-        dateFormat="MMMM d, yyyy h:mm aa"
+        dateFormat="MMMM d, HH:mm"
         showTimeInput
+        shouldCloseOnSelect={false}
         minDate={getMinDate()}
         maxDate={getMaxDate()}
         onChange={(date: any) => {
-          setValue(label, date);
+          setTime(date);
+        }}
+        onCalendarClose={() => {
+          setValue(label, time);
         }}
         withPortal
         placeholderText={label}
@@ -82,8 +89,6 @@ export function Form() {
         id: nanoid(),
         departure: data.departure.toISOString(),
         arrival: data.arrival.toISOString(),
-        // departure: '2019-02-03 14:05',
-        // arrival: '2019-02-04 01:23',
         from: {
           name: data.from.gmaps?.name,
           lat: data.from.location?.lat,
@@ -116,7 +121,7 @@ export function Form() {
 
     if (latestEnd) {
       return {
-        required: false,
+        disabled: true,
         value: {
           gmaps: { name: latestEnd.name },
           location: {
@@ -128,7 +133,7 @@ export function Form() {
     }
 
     return {
-      required: true,
+      disabled: false,
       value: null,
     };
   };
@@ -139,17 +144,10 @@ export function Form() {
 
   const fromSuggestion = getFrom();
 
-  console.log('fromSuggestion.value', getValues('from'));
-
   return (
     <div className="dbg-box">
       <h2>Form</h2>
-      <form
-        autoComplete="off"
-        onSubmit={handleSubmit(onSubmit, (e) => {
-          console.log('e', e);
-        })}
-      >
+      <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         {/* From */}
         <div
           className="dbg-box__input"
@@ -163,7 +161,7 @@ export function Form() {
                 : fromSuggestion.value,
             })}
             initialValue={fromSuggestion.value?.gmaps.name}
-            disabled={!fromSuggestion.required}
+            disabled={fromSuggestion.disabled}
             onChange={() => {}}
             onBlur={() => {}}
             onSuggestSelect={(data) => {
@@ -198,13 +196,6 @@ export function Form() {
           </select>
         </div>
 
-        <div
-          className="dbg-box__input"
-          style={{ borderColor: errors.arrival ? 'red' : 'transparent' }}
-        >
-          <RouteDatePicker label="arrival" />
-        </div>
-
         {/* To */}
         <div
           className="dbg-box__input"
@@ -219,6 +210,13 @@ export function Form() {
             }}
             autoComplete="off"
           />
+        </div>
+
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.arrival ? 'red' : 'transparent' }}
+        >
+          <RouteDatePicker label="arrival" />
         </div>
 
         <button type="submit">Add</button>

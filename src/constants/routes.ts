@@ -3,8 +3,8 @@ import { Route } from '../app/types';
 const routes: Route[] = [
   {
     id: 'nYw34AOsYpJG5BXHfXQzx',
-    departure: '2019-10-16 01:10:00',
-    arrival: '2019-10-16 07:30:00',
+    departure: '2021-06-16 01:10:00',
+    arrival: '2021-06-16 07:30:00',
     from: {
       name: 'Moscow',
       lat: 55.7558,
@@ -23,8 +23,8 @@ const routes: Route[] = [
   },
   {
     id: 'Sy0BEfPNO3EiyUuzc2x6U',
-    departure: '2019-10-16 01:10:00',
-    arrival: '2019-10-16 07:30:00',
+    departure: '2021-06-28 01:10:00',
+    arrival: '2021-06-28 07:30:00',
     from: {
       name: 'Dubai',
       lat: 55.7558,

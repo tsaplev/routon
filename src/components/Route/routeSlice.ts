@@ -12,7 +12,8 @@ interface RouteState {
 
 const initialState: RouteState = {
   isLoading: false,
-  routes: routes,
+  // routes: routes,
+  routes: [],
 };
 
 export const addRoute = createAsyncThunk(

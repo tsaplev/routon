@@ -14,7 +14,7 @@ class RouteCalculator {
       return path;
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const directionsService = new google.maps.DirectionsService();
       const request = {
         origin: from,
@@ -25,7 +25,7 @@ class RouteCalculator {
       directionsService.route(request, (response, status) => {
         if (status !== 'OK') {
           console.error('Directions request failed due to:' + status);
-          return reject(path);
+          return resolve(path);
         }
 
         if (response?.routes[0]?.overview_path) {
@@ -37,7 +37,7 @@ class RouteCalculator {
           return resolve(linePath);
         }
 
-        return path;
+        return resolve(path);
       });
     });
   }

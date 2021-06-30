@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addRoute, selectRoutesLoadingStatus } from './routeSlice';
 import { nanoid } from 'nanoid';
 import Geosuggest from 'react-geosuggest';
-import { useForm } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
+import { useForm } from 'react-hook-form';
+import { selectRoutes } from './routeSlice';
+import { transport } from '../../constants/transport';
 
-import ru from 'date-fns/locale/ru';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../LocationInput/index.css';
 
 export function Form() {
   const isLoading = useSelector(selectRoutesLoadingStatus);
+  const routes = useSelector(selectRoutes);
   const dispatch = useDispatch();
 
   const {
@@ -20,12 +22,66 @@ export function Form() {
     watch,
     setValue,
     getValues,
+    reset,
     formState: { errors },
   } = useForm({
     mode: 'onSubmit',
     shouldFocusError: false,
     reValidateMode: 'onBlur',
   });
+
+  useEffect(() => {
+    if (routes.length === 0) {
+      reset();
+    }
+  }, [routes, reset]);
+
+  const RouteDatePicker = ({ label }: { label: string }) => {
+    const [time, setTime] = useState();
+    const selectedDate = watch(label, null);
+    const latestDeparture = routes[routes.length - 1]?.departure;
+
+    const getMinDate = () => {
+      if (label === 'departure') {
+        return latestDeparture ? new Date(latestDeparture) : null;
+      }
+
+      if (label === 'arrival') {
+        return getValues('departure');
+      }
+    };
+
+    const getMaxDate = () => {
+      if (label === 'departure') {
+        return getValues('arrival');
+      }
+
+      if (label === 'arrival') {
+        return null;
+      }
+    };
+
+    return (
+      <DatePicker
+        {...register(label, { required: true })}
+        selected={time ? time : selectedDate}
+        timeInputLabel="Time:"
+        dateFormat="MMMM d, HH:mm"
+        showTimeInput
+        shouldCloseOnSelect={false}
+        minDate={getMinDate()}
+        maxDate={getMaxDate()}
+        onChange={(date: any) => {
+          setTime(date);
+        }}
+        onCalendarClose={() => {
+          setValue(label, time);
+        }}
+        withPortal
+        placeholderText={label}
+      />
+    );
+  };
 
   const onSubmit = (data: any) => {
     dispatch(
@@ -47,48 +103,8 @@ export function Form() {
         path: [],
       })
     );
-  };
 
-  const RouteDatePicker = ({ label }: { label: string }) => {
-    const selectedDate = watch(label, null);
-
-    const getMinDate = () => {
-      if (label === 'departure') {
-        return null;
-      }
-
-      if (label === 'arrival') {
-        return getValues('departure');
-      }
-    };
-
-    const getMaxDate = () => {
-      if (label === 'departure') {
-        return getValues('arrival');
-      }
-
-      if (label === 'arrival') {
-        return null;
-      }
-    };
-
-    return (
-      <DatePicker
-        {...register(label, { required: true })}
-        selected={selectedDate}
-        timeInputLabel="Time:"
-        dateFormat="MMMM d, yyyy h:mm aa"
-        showTimeInput
-        locale={ru}
-        minDate={getMinDate()}
-        maxDate={getMaxDate()}
-        onChange={(date: any) => {
-          setValue(label, date);
-        }}
-        withPortal
-        placeholderText={label}
-      />
-    );
+    reset();
   };
 
   if (isLoading) {
@@ -100,64 +116,91 @@ export function Form() {
     );
   }
 
+  const getFrom = () => {
+    const latestEnd = routes[routes.length - 1]?.to;
+
+    if (latestEnd) {
+      return {
+        disabled: true,
+        value: {
+          gmaps: { name: latestEnd.name },
+          location: {
+            lat: latestEnd.lat,
+            lng: latestEnd.lng,
+          },
+        },
+      };
+    }
+
+    return {
+      disabled: false,
+      value: null,
+    };
+  };
+
+  // const getClosestPossibleDepartureDate = () => {
+  //   const latestDeparture = routes[routes.length - 1].departure;
+  // };
+
+  const fromSuggestion = getFrom();
+
   return (
     <div className="dbg-box">
       <h2>Form</h2>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         {/* From */}
-        <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.from ? 'red' : 'transparent' }}
+        >
           <Geosuggest
-            {...register('from', { required: true })}
+            {...register('from', {
+              required: true,
+              value: getValues('from')
+                ? getValues('from')
+                : fromSuggestion.value,
+            })}
+            initialValue={fromSuggestion.value?.gmaps.name}
+            disabled={fromSuggestion.disabled}
             onChange={() => {}}
             onBlur={() => {}}
-            onSuggestSelect={(data: any) => {
+            onSuggestSelect={(data) => {
               setValue('from', data);
             }}
             autoComplete="off"
           />
-          {errors.from && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
         </div>
 
-        {/* Departure */}
-        <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.departure ? 'red' : 'transparent' }}
+        >
           <RouteDatePicker label="departure" />
-          {errors.departure && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
         </div>
 
         {/* Transport */}
-        <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.transport ? 'red' : 'transparent' }}
+        >
           <select
             {...register('transport', { required: true })}
             name="transport"
-            defaultValue=""
           >
             <option hidden label=" -- " />
-            <option value="plane">Plane</option>
-            <option value="train">Train</option>
-            <option value="car">Car</option>
-            <option value="bus">Bus</option>
-            <option value="ship">Ship</option>
-            <option value="other">Other</option>
+            {Object.entries(transport).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value.label}
+              </option>
+            ))}
           </select>
-          {errors.transport && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
-        </div>
-
-        {/* Arrival */}
-        <div className="dbg-box__input">
-          <RouteDatePicker label="arrival" />
-          {errors.arrival && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
         </div>
 
         {/* To */}
-        <div className="dbg-box__input">
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.to ? 'red' : 'transparent' }}
+        >
           <Geosuggest
             {...register('to', { required: true })}
             onChange={() => {}}
@@ -167,9 +210,13 @@ export function Form() {
             }}
             autoComplete="off"
           />
-          {errors.to && (
-            <span style={{ color: 'red' }}> This field is required</span>
-          )}
+        </div>
+
+        <div
+          className="dbg-box__input"
+          style={{ borderColor: errors.arrival ? 'red' : 'transparent' }}
+        >
+          <RouteDatePicker label="arrival" />
         </div>
 
         <button type="submit">Add</button>

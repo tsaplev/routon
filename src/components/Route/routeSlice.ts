@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { Route } from '../../app/types';
 
-import { routes } from '../../constants/routes';
+// import { routes } from '../../constants/routes';
 import RouteCalculator from '../../RouteCalculator';
 
 interface RouteState {

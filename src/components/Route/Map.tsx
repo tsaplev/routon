@@ -91,7 +91,7 @@ export function Map() {
 
     clearRoutes(mapData);
     renderRoutes(gmap, routes);
-  }, [gmap, routes]);
+  }, [gmap, routes, mapData]);
 
   return (
     <div className="dbg-box">

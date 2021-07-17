@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef} from 'react';
 import { useSelector } from 'react-redux';
 import { GoogleMap, GoogleMapData, Route } from '../../app/types';
 import { selectRoutes } from './routeSlice';
@@ -6,7 +6,26 @@ import { selectRoutes } from './routeSlice';
 export function Map() {
   const routes = useSelector(selectRoutes);
   const [gmap, setGmap] = useState<GoogleMap>();
-  const [mapData, setMapData] = useState<GoogleMapData>([]);
+  const globalMapData = useRef<GoogleMapData>([]);
+
+  useEffect(() => {
+    setGmap(
+      new google.maps.Map(document.getElementById('map') as HTMLElement, {
+        zoom: 2.3,
+        center: { lat: 50, lng: 80 },
+        mapTypeId: 'terrain',
+        disableDefaultUI: true,
+        zoomControl: true,
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    if (gmap) {
+      clearRoutes();
+      renderRoutes(gmap, routes);
+    }
+  }, [gmap, routes]);
 
   const renderRoutes = (map: GoogleMap, routes: Route[]) => {
     const bounds = new google.maps.LatLngBounds();
@@ -63,36 +82,14 @@ export function Map() {
       }
     });
 
-    setMapData(mapData);
+    globalMapData.current = mapData;
   };
 
-  const clearRoutes = (mapData: GoogleMapData) => {
-    mapData.forEach((el) => {
+  const clearRoutes = () => {
+    globalMapData.current.forEach((el) => {
       el.setMap(null);
     });
   };
-
-  useEffect(() => {
-    setGmap(
-      new google.maps.Map(document.getElementById('map') as HTMLElement, {
-        zoom: 2.3,
-        center: { lat: 50, lng: 80 },
-        mapTypeId: 'terrain',
-        disableDefaultUI: true,
-        zoomControl: true,
-      })
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!gmap) {
-      return;
-    }
-    clearRoutes(mapData);
-    renderRoutes(gmap, routes);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gmap, routes]);
 
   return (
     <div className="dbg-box">

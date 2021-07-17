@@ -8,8 +8,8 @@ function App() {
   return (
     <div className="layout">
       <Map />
-      <Form />
       <List />
+      <Form />
     </div>
   );
 }

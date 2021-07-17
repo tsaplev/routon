@@ -88,10 +88,11 @@ export function Map() {
     if (!gmap) {
       return;
     }
-
     clearRoutes(mapData);
     renderRoutes(gmap, routes);
-  }, [gmap, routes, mapData]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gmap, routes]);
 
   return (
     <div className="dbg-box">

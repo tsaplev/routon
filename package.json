@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "homepage": "https://tsaplev.github.io/tripplanner/",
   "dependencies": {
     "@reduxjs/toolkit": "^1.2.5",
     "@testing-library/jest-dom": "^4.2.4",

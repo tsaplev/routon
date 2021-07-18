@@ -8,6 +8,11 @@ body {
   margin-bottom: 1rem;
 }
 
+.dbg-box > h2 {
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
 .dbg-box__input {
   margin-bottom: 1rem;
   border: 1px solid transparent;

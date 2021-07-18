@@ -6,13 +6,13 @@ import { selectRoutes } from './routeSlice';
 export function Map() {
   const routes = useSelector(selectRoutes);
   const [gmap, setGmap] = useState<GoogleMap>();
-  const globalMapData = useRef<GoogleMapData>([]);
+  const mapData = useRef<GoogleMapData>([]);
 
   useEffect(() => {
     setGmap(
       new google.maps.Map(document.getElementById('map') as HTMLElement, {
-        zoom: 2.3,
-        center: { lat: 50, lng: 80 },
+        zoom: 2.5,
+        center: { lat: 25, lng: 25 },
         mapTypeId: 'terrain',
         disableDefaultUI: true,
         zoomControl: true,
@@ -38,7 +38,6 @@ export function Map() {
       strokeWeight: 1,
     };
 
-    const mapData: GoogleMapData = [];
     routes.forEach((route, index) => {
       const from = new google.maps.LatLng(route.path[0].lat, route.path[0].lng);
       const to = new google.maps.LatLng(route.path[1].lat, route.path[1].lng);
@@ -57,7 +56,7 @@ export function Map() {
         position: from,
       });
       bounds.extend(from);
-      mapData.push(markerFrom);
+      mapData.current.push(markerFrom);
 
       const pathLine = new google.maps.Polyline({
         map: map,
@@ -67,7 +66,7 @@ export function Map() {
         strokeOpacity: 1.0,
         strokeWeight: 2,
       });
-      mapData.push(pathLine);
+      mapData.current.push(pathLine);
 
       point.label.text = String(Number(point.label.text) + 1);
       const markerTo = new google.maps.Marker({
@@ -75,18 +74,16 @@ export function Map() {
         position: to,
       });
       bounds.extend(to);
-      mapData.push(markerTo);
+      mapData.current.push(markerTo);
 
       if (!bounds.isEmpty()) {
         map.fitBounds(bounds);
       }
     });
-
-    globalMapData.current = mapData;
   };
 
   const clearRoutes = () => {
-    globalMapData.current.forEach((el) => {
+    mapData.current.forEach((el) => {
       el.setMap(null);
     });
   };

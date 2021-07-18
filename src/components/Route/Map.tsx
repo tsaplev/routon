@@ -11,7 +11,7 @@ export function Map() {
   useEffect(() => {
     setGmap(
       new google.maps.Map(document.getElementById('map') as HTMLElement, {
-        zoom: 2.5,
+        zoom: 2,
         center: { lat: 25, lng: 25 },
         mapTypeId: 'terrain',
         disableDefaultUI: true,
@@ -21,8 +21,8 @@ export function Map() {
   }, []);
 
   useEffect(() => {
+    clearRoutes();
     if (gmap) {
-      clearRoutes();
       renderRoutes(gmap, routes);
     }
   }, [gmap, routes]);
@@ -98,7 +98,7 @@ export function Map() {
           </pre>
         );
       })} */}
-      <div id="map" style={{ height: '500px' }}></div>
+      <div id="map" style={{ height: '580px' }}></div>
     </div>
   );
 }

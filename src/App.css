@@ -2,6 +2,11 @@ body {
   padding: 3rem;
 }
 
+.layout {
+  max-width: 1024px;
+  margin: auto;
+}
+
 .dbg-box {
   border: 1px solid;
   padding: 1rem;
@@ -17,6 +22,15 @@ body {
   margin-bottom: 1rem;
   border: 1px solid transparent;
   width: fit-content;
+}
+
+.route-row {
+  width: 70%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 @media only screen and (max-width: 600px) {

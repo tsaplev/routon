@@ -16,25 +16,17 @@ export type TravelMode =
   | 'TRANSIT'
   | 'OTHER';
 
+export type Vehicle = 'plane' | 'train' | 'car' | 'bus' | 'ship' | 'other';
+
 export interface TransportItem {
   label: string;
   icon: string;
   travelMode: TravelMode;
 }
 
-export interface Transport {
-  [key: string]: TransportItem; // TODO set to Vehicle
-}
-
-export type Vehicle = 'plane' | 'train' | 'car' | 'bus' | 'ship' | 'other';
-// export enum Vehicle {
-//   plane,
-//   train,
-//   car,
-//   bus,
-//   ship,
-//   other,
-// }
+export type Transport = {
+  [key in Vehicle]: TransportItem;
+};
 
 export type Route = {
   id: string;

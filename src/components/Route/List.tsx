@@ -26,11 +26,6 @@ export function List() {
             <i>{formatDate(el.arrival)}</i>
           </p>
         );
-        // return (
-        //   <pre key={route.id} style={{ background: 'lightgray' }}>
-        //     <p>{JSON.stringify(route, null, 2)}</p>
-        //   </pre>
-        // );
       })}
       <button onClick={() => dispatch(deleteLastRoute())}>Delete</button>
       <button onClick={() => dispatch(deleteAllRoutes())}>Delete all</button>

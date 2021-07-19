@@ -8,7 +8,6 @@ import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 
-
 Sentry.init({
   dsn: "https://68ac5229884344098d7172a5275d9594@o311074.ingest.sentry.io/5870841",
   integrations: [new Integrations.BrowserTracing()],

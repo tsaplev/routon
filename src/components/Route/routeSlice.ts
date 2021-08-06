@@ -19,6 +19,10 @@ const initialState: RouteState = {
 export const addRoute = createAsyncThunk(
   'route/addRoute',
   async (route: Route) => {
+    
+    route.arrival = '25 Jul';
+    route.departure = '27 Jul';
+
     route.path = await RouteCalculator.getPath(
       route.from,
       route.to,

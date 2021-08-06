@@ -9,10 +9,11 @@ export function List() {
   const dispatch = useDispatch();
 
   const formatDate = (date: string): React.ReactNode => {
-    const userDate = new Date(date);
-    const month = userDate.toLocaleString('en-gb', { day: 'numeric', month: 'short' });
-    const time = new Intl.DateTimeFormat('en-GB', { timeStyle: 'short' }).format(userDate)
-    return <>{month} <b>{time}</b></>;
+    // const userDate = new Date(date);
+    // const month = userDate.toLocaleString('en-gb', { day: 'numeric', month: 'short' });
+    // const time = new Intl.DateTimeFormat('en-GB', { timeStyle: 'short' }).format(userDate)
+    // return <>{month} <b>{time}</b></>;
+    return date;
   }
 
   return (

@@ -30,6 +30,7 @@ export function Form() {
     reValidateMode: 'onBlur',
   });
 
+  // Сбросить все введнные данные в форме если удалили все маршруты
   useEffect(() => {
     if (routes.length === 0) {
       reset();
@@ -63,7 +64,7 @@ export function Form() {
 
     return (
       <DatePicker
-        {...register(label, { required: true })}
+        {...register(label, { required: false })}
         selected={time ? time : selectedDate}
         timeInputLabel="Time:"
         dateFormat="MMMM d, HH:mm"
@@ -87,8 +88,8 @@ export function Form() {
     dispatch(
       addRoute({
         id: nanoid(),
-        departure: data.departure.toISOString(),
-        arrival: data.arrival.toISOString(),
+        departure: data.departure?.toISOString(),
+        arrival: data.arrival?.toISOString(),
         from: {
           name: data.from.gmaps?.name,
           lat: data.from.location?.lat,
